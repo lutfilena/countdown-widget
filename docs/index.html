@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="100 Days">
+<title>100 Day Countdown</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0a;
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    min-height: 100dvh;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container {
+    padding: 20px;
+    max-width: 420px;
+    width: 100%;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+    margin-bottom: 20px;
+  }
+  .square {
+    aspect-ratio: 1;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 500;
+    position: relative;
+  }
+  .square.completed {
+    background: #E63946;
+    color: rgba(255,255,255,0.85);
+  }
+  .square.today {
+    background: #E63946;
+    color: rgba(255,255,255,0.95);
+    animation: pulse 1.2s ease-in-out infinite alternate;
+    box-shadow: 0 0 12px rgba(230,57,70,0.7);
+  }
+  .square.remaining {
+    border: 1.5px solid #333;
+    color: rgba(255,255,255,0.25);
+    font-weight: 400;
+  }
+  @keyframes pulse {
+    from { opacity: 1; }
+    to { opacity: 0.5; }
+  }
+  .status {
+    text-align: center;
+  }
+  .status .day-label {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .status .end-date {
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+  .progress-bar {
+    width: 100%;
+    height: 4px;
+    background: #1a1a1a;
+    border-radius: 2px;
+    margin-top: 16px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #E63946;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="grid" id="grid"></div>
+  <div class="status">
+    <div class="day-label" id="dayLabel"></div>
+    <div class="end-date" id="endDate"></div>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+</div>
+<script>
+  // START DATE: February 22, 2026
+  const START_DATE = new Date(2026, 1, 22); // month is 0-indexed
+
+  function startOfDay(d) {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+
+  function render() {
+    const today = startOfDay(new Date());
+    const start = startOfDay(START_DATE);
+    const diffMs = today - start;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const currentDay = Math.min(Math.max(diffDays + 1, 0), 101);
+
+    const endDate = new Date(start);
+    endDate.setDate(endDate.getDate() + 99);
+
+    const grid = document.getElementById('grid');
+    grid.innerHTML = '';
+
+    for (let i = 1; i <= 100; i++) {
+      const sq = document.createElement('div');
+      sq.className = 'square';
+      if (i < currentDay) {
+        sq.classList.add('completed');
+      } else if (i === currentDay && currentDay <= 100) {
+        sq.classList.add('today');
+      } else {
+        sq.classList.add('remaining');
+      }
+      sq.textContent = i;
+      grid.appendChild(sq);
+    }
+
+    const dayLabel = document.getElementById('dayLabel');
+    if (currentDay <= 0) {
+      dayLabel.textContent = 'Starts soon';
+    } else if (currentDay > 100) {
+      dayLabel.textContent = '✅ Completed!';
+    } else {
+      dayLabel.textContent = `DAY ${currentDay} of 100`;
+    }
+
+    document.getElementById('endDate').textContent =
+      `Ends ${endDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+
+    const pct = Math.min(currentDay / 100 * 100, 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  render();
+  // Update every minute
+  setInterval(render, 60000);
+</script>
+</body>
+</html>
