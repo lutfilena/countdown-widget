@@ -16,15 +16,16 @@ class DesktopWindow: NSWindow {
             defer: false
         )
 
-        self.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.desktopWindow)) + 1)
-        self.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle]
+        // Use normal level so it receives all mouse events
+        // But keep it behind most windows
+        self.level = .normal
+        self.collectionBehavior = [.canJoinAllSpaces, .managed, .fullScreenAuxiliary]
         self.isOpaque = false
         self.backgroundColor = .clear
-        self.hasShadow = false
+        self.hasShadow = true
         self.ignoresMouseEvents = false
-        self.isMovableByWindowBackground = false
+        self.isMovableByWindowBackground = true  // Simple click+drag anywhere
         self.isReleasedWhenClosed = false
-        self.acceptsMouseMovedEvents = true
 
         let hostView = NSHostingView(rootView: contentView)
         hostView.frame = self.frame
@@ -71,12 +72,6 @@ class DesktopWindow: NSWindow {
         NSMenu.popUpContextMenu(menu, with: event, for: self.contentView!)
     }
 
-    // Click to drag (no modifier needed)
-    override func mouseDown(with event: NSEvent) {
-        self.performDrag(with: event)
-    }
-
-    // Desktop windows need to accept mouse events
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { false }
 }
