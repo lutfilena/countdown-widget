@@ -41,9 +41,9 @@ def generate_wallpaper(output_path=None):
     grid_width = GRID_SIZE * square_size + (GRID_SIZE - 1) * gap
     grid_height = grid_width  # Square grid
     
-    # Center the grid vertically (slightly above center for aesthetic)
+    # Position grid in lower half to avoid lock screen widgets/clock
     start_x = (WIDTH - grid_width) // 2
-    start_y = (HEIGHT - grid_height) // 2 - 100
+    start_y = (HEIGHT - grid_height) // 2 + 250
     
     # Draw grid
     for i in range(TOTAL_DAYS):
