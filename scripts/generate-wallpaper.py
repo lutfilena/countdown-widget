@@ -44,7 +44,7 @@ def generate_wallpaper(output_path=None):
     start_x = (WIDTH - total_width) // 2 + row_label_width
     
     # Grid only — positioned to clear lock screen widgets
-    start_y = (HEIGHT - grid_height) // 2 + 250
+    start_y = (HEIGHT - grid_height) // 2 + 150
     
     # Draw row numbers (week numbers) on the left
     try:
