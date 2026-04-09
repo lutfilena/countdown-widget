@@ -87,6 +87,12 @@ def generate_wallpaper(output_path=None):
         tw = bbox[2] - bbox[0]
         draw.text((hx + (square_size - tw) // 2, start_y - 30), label, fill=(255, 255, 255, 80), font=header_font)
     
+    # Draw vertical separator line between Friday (col 4) and Saturday (col 5)
+    sep_x = start_x + 5 * (square_size + gap) - gap // 2
+    sep_y_top = start_y - 35
+    sep_y_bottom = start_y + grid_height
+    draw.line([(sep_x, sep_y_top), (sep_x, sep_y_bottom)], fill=(255, 255, 255, 180), width=4)
+    
     # Draw grid
     for i in range(TOTAL_DAYS):
         row = i // GRID_COLS
