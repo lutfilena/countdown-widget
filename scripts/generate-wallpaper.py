@@ -20,8 +20,14 @@ HEIGHT = 2556
 # Colors
 BG_COLOR = (10, 10, 10)
 RED = (230, 57, 70)       # #E63946
+YELLOW = (255, 204, 0)    # Important dates
+GREEN = (34, 197, 94)     # Milestone dates
 OUTLINE = (51, 51, 51)    # #333
 TEXT_WHITE = (255, 255, 255)
+
+# Special days
+YELLOW_DAYS = {22, 23, 24, 44, 45}  # Important dates coming up
+GREEN_DAYS = {41, 56}                # Milestones
 
 def generate_wallpaper(output_path=None):
     today = date.today()
@@ -74,17 +80,31 @@ def generate_wallpaper(output_path=None):
         x = start_x + col * (square_size + gap)
         y = start_y + row * (square_size + gap)
         
+        # Determine color for this day
+        if day in YELLOW_DAYS:
+            day_color = YELLOW
+            day_glow = (255, 204, 0, 60)
+        elif day in GREEN_DAYS:
+            day_color = GREEN
+            day_glow = (34, 197, 94, 60)
+        else:
+            day_color = RED
+            day_glow = (230, 57, 70, 60)
+        
         if day < current_day:
-            # Completed - solid red
-            draw.rounded_rectangle([x, y, x + square_size, y + square_size], radius=8, fill=RED)
+            # Completed
+            draw.rounded_rectangle([x, y, x + square_size, y + square_size], radius=8, fill=day_color)
         elif day == current_day and current_day <= TOTAL_DAYS:
-            # Today - red with glow effect
+            # Today - with glow
             glow_pad = 6
             draw.rounded_rectangle(
                 [x - glow_pad, y - glow_pad, x + square_size + glow_pad, y + square_size + glow_pad],
-                radius=12, fill=(230, 57, 70, 60)
+                radius=12, fill=day_glow
             )
-            draw.rounded_rectangle([x, y, x + square_size, y + square_size], radius=8, fill=RED)
+            draw.rounded_rectangle([x, y, x + square_size, y + square_size], radius=8, fill=day_color)
+        elif day in YELLOW_DAYS or day in GREEN_DAYS:
+            # Future special day - outlined in its color
+            draw.rounded_rectangle([x, y, x + square_size, y + square_size], radius=8, outline=day_color, width=3)
         else:
             # Remaining - outline only
             draw.rounded_rectangle([x, y, x + square_size, y + square_size], radius=8, outline=OUTLINE, width=2)
